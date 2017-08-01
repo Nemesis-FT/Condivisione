@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import bcrypt
 
 app = Flask(__name__)
 
@@ -10,7 +11,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
-    passwd = db.Column(db.String(80))
+    passwd = db.Column(db.LargeBinary)
     nome = db.Column(db.String(80))
     cognome = db.Column(db.String(80))
     classe = db.Column(db.String(2))
@@ -70,7 +71,8 @@ class Impegno(db.Model):
         self.materia=materia
 
 db.create_all()
-
-nuovouser = User('admin', 'admin', 'dio', 'brando', '5f', 1)
+p=b"admin"
+cenere=bcrypt.hashpw(p,bcrypt.gensalt())
+nuovouser = User('admin', cenere, 'dio', 'brando', '5f', 1)
 db.session.add(nuovouser)
 db.session.commit()

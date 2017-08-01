@@ -1,6 +1,7 @@
 from flask import Flask, session, url_for, redirect, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 import smtplib
+import bcrypt
 app = Flask(__name__)
 app.secret_key = "condivisione"
 
@@ -11,7 +12,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
-    passwd = db.Column(db.String(80))
+    passwd = db.Column(db.LargeBinary)
     nome = db.Column(db.String(80))
     cognome = db.Column(db.String(80))
     classe = db.Column(db.String(2))
@@ -77,7 +78,7 @@ db.create_all()
 def login(username, password):
     user = User.query.filter_by(username=username).first()
     try:
-        return password == user.passwd
+        return bcrypt.checkpw(bytes(password, encoding="utf-8"), user.passwd)
     except AttributeError:
         # Se non esiste l'Utente
         return False
@@ -144,7 +145,9 @@ def page_register():
         css = url_for("static", filename="style.css")
         return render_template("User/add.html.j2", css=css)
     else:
-        nuovouser = User(request.form['username'], request.form['passwd'], request.form['nome'], request.form['cognome'], request.form['classe'], 0)
+        p = bytes(request.form["passwd"], encoding="utf-8")
+        cenere=bcrypt.hashpw(p, bcrypt.gensalt())
+        nuovouser = User(request.form['username'], cenere, request.form['nome'], request.form['cognome'], request.form['classe'], 0)
         db.session.add(nuovouser)
         db.session.commit()
         return redirect(url_for('page_login'))
@@ -197,7 +200,9 @@ def page_user_show(uid):
             abort(403)
         else:
             users = User.query.get(uid)
-            users.passwd = request.form["passwd"]
+            p = bytes(request.form["passwd"], encoding="utf-8")
+            cenere=bcrypt.hashpw(p, bcrypt.gensalt())
+            users.passwd=cenere
             users.classe = request.form["classe"]
             db.session.commit()
             return redirect(url_for('page_dashboard'))
