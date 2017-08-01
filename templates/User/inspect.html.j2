@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Informazioni Utente - Condivisione</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{css}}">
+  </head>
+  <body>
+    {% include 'nav.html.j2' %}
+    <div class="container">
+    <div class="jumbotron centered">
+      <h1>
+         Informazioni utente
+      </h1><p></p>
+      <h3>Nome:</h3><h6>{{user.nome}}</h6><p></p>
+      <h3>Cognome:</h3><h6>{{user.cognome}}</h6><p></p>
+      <h3>Classe:</h3><h6>{{user.classe}}</h6><p></p>
+      <h3>Indirizzo:</h3><h6>{{user.username}}</h6><p></p>
+   </div>
+ </div>
+  </body>
+</html>

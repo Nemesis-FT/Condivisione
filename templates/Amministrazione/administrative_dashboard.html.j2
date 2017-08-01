@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Dashboard - Gestione</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{css}}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="panel panel-success">
+        <div class="panel-heading"> Benvenuto nel pannello di amministrazione </div>
+        <h5><center>In qesta pagina è possibile modificare i dati interni al db e la tua password.<p></p>Ricorda: da grandi poteri derivano grandi responsabilita'...</center></h5>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading"> Operazioni possibili </div>
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/changepw/{{id}}">Modifica il profilo </a>
+          <li class="list-group-item"><a href="/informazioni">Informazioni sulla piattaforma </a>
+          <li class="list-group-item"><a href="/" class="btn btn-danger navbar-btn btn-right">Logout</a>
+      </div>
+          <div class="panel panel-primary">
+            <div class="panel-heading"> Utenti sulla piattaforma </div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Classe</th>
+                  <th>Cancella</th>
+                </tr>
+              </thead>
+              {% for user in users %}
+                <tr>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.passwd }}</td>
+                  <td>{{ user.nome }}</td>
+                  <td>{{ user.cognome }}</td>
+                  <td>{{ user.classe }}</td>
+                  <td><a href="/user_del/{{ user.uid }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <div class="panel panel-primary">
+            <div class="panel-heading"> Corsi sulla piattaforma </div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Proprietario</th>
+                  <th>Materia</th>
+                  <th>Argomenti</th>
+                  <th>Luogo</th>
+                  <th>Prezzo</th>
+                  <th>Cancella</th>
+                </tr>
+              </thead>
+              {% for corso in corsi %}
+                <tr>
+                  <td>{{ corso.Proprietario }}</td>
+                  <td>{{ corso.materia }}</td>
+                  <td>{{ corso.argomenti }}</td>
+                  <td>{{ corso.luogo }}</td>
+                  <td>{{ corso.prezzo }}</td>
+                  <td><a href="/corso_del/{{ corso.cid }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+  </body>
+</html>

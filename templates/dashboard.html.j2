@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>Dashboard - Gestione</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{css}}">
+  </head>
+  <body>
+    {% include 'nav.html.j2' %}
+    <div class="container">
+      <div class="panel panel-success">
+        <div class="panel-heading"> Benvenuto nella tua dashboard! </div>
+        <h5><center>In qesta pagina puoi monitorare i tuoi impegni, modificare il tuo profilo, creare e partecipare a recuperi organizzati da te o altri studenti.</center></h5>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-primary">
+            <div class="panel-heading"> La tua agenda </div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Richiedente</th>
+                  <th>Proprietario</th>
+                  <th>Materia</th>
+                  <th>Data</th>
+                  <th>Ora</th>
+                  <th>Cancella</th>
+                </tr>
+              </thead>
+              {% for impegno in impegni %}
+              {% if impegno.status is equalto 1 %}
+                <tr>
+                  <td><a href="/user_inspect/{{ impegno.richId }}">{{ impegno.nomeRich }}</a></td>
+                  <td><a href="/user_inspect/{{ impegno.propId }}">{{ impegno.nomeProp }}</a></td>
+                  <td>{{ impegno.materia }}</td>
+                  <td>{{ impegno.data }}</td>
+                  <td>{{ impegno.ora }}</td>
+                  <td><a href="/impegno_del/{{ impegno.iid }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+              {% endif %}
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="panel panel-info">
+            <div class="panel-heading"> Operazioni possibili </div>
+            <ul class="list-group">
+              <li class="list-group-item"><a href="/nuovocorso">Crea un nuovo corso </a>
+              <li class="list-group-item"><a href="/searchlesson">Cerca un corso </a>
+              <li class="list-group-item"><a href="/changepw/{{id}}">Modifica il profilo </a>
+              <li class="list-group-item"><a href="/informazioni">Informazioni sulla piattaforma </a>
+        </div>
+        <ul class="list group">
+          <li class="list-group-item">
+            <span class="badge">{{notifiche}}</span>
+            <a href="/richieste"> Gestisci le nuove richieste </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p> </p>
+  </body>
+</html>
