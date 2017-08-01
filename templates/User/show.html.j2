@@ -11,7 +11,7 @@
          Modifica utente
       </h1>
       <form class="form-inline" action="/changepw/{{users.uid}}" method="post">
-        <input class="form-control" type="text" placeholder="Immetti la nuova password" name="passwd" value="{{users.passwd}}">
+        <input class="form-control" type="password" placeholder="Immetti la nuova password" name="passwd" value="{{users.passwd}}">
         <input class="form-control" type="text" placeholder="Classe" name="classe" value="{{users.classe}}">
         <input class="btn btn-primary" type="submit">
       </form>
