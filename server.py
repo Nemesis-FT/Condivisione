@@ -39,14 +39,16 @@ class Corso(db.Model):
     prezzo=db.Column(db.Float)
     idProprietario = db.Column(db.Integer)
     Proprietario = db.Column(db.String(80))
+    professore = db.Column(db.String(80))
 
-    def __init__(self, nome, materia, luogo, prezzo, idProprietario, Proprietario):
+    def __init__(self, nome, materia, luogo, prezzo, idProprietario, Proprietario, professore):
         self.nome=nome
         self.materia=materia
         self.luogo=luogo
         self.prezzo=prezzo
         self.idProprietario=idProprietario
         self.Proprietario=Proprietario
+        self.professore=professore
     def __repr__(self):
         return "<User {}>".format(self.nome, self.materia, self.luogo, self.prezzo, self.idProprietario)
 
@@ -106,7 +108,7 @@ def sendemail(emailUtente, kind, ora, data, nome, materia):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     server.login(username, password)
-    if str(kind) == "1": #Hai una nuoova richiesta sul sito
+    if str(kind) == "1": #Hai una nuova richiesta sul sito
         msg = "L\'utente "+ nome + " ha chiesto un appuntamento il "+ data +" alle ore "+ ora +" per "+ materia + ". Per accettare o declinare, accedi al sito Condivisione."
     elif str(kind) == "2":
         msg = "La tua richiesta di ripetizione fatta allo studente "+ nome + " per il giorno "+ data + " alle ore "+ ora + " non e\' stata accettata."
@@ -226,7 +228,7 @@ def page_corso_new():
         else:
             creatore=User.query.get(establishuid(session['username']))
             proprietario=creatore.nome+" "+creatore.cognome
-            nuovocorso = Corso(request.form['nome'], request.form['materia'], request.form['luogo'], float(request.form['prezzo']), establishuid(session['username']), proprietario)
+            nuovocorso = Corso(request.form['nome'], request.form['materia'], request.form['luogo'], float(request.form['prezzo']), establishuid(session['username']), proprietario, request.form['professore'])
             db.session.add(nuovocorso)
             db.session.commit()
             return redirect(url_for('page_dashboard'))
@@ -244,7 +246,7 @@ def page_corso_list():
         corsi = Corso.query.all()
         risultati=[]
         for corso in corsi:
-            if corso.luogo == ricerca or corso.materia == ricerca:
+            if corso.luogo == ricerca or corso.materia == ricerca or corso.professore == ricerca:
                 risultati.append(corso)
         css = url_for("static", filename="style.css")
         return render_template("Corsi/list.html.j2", css=css, user=session["username"], corsi=risultati, uid=establishuid(session['username']))

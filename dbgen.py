@@ -38,14 +38,16 @@ class Corso(db.Model):
     prezzo=db.Column(db.Float)
     idProprietario = db.Column(db.Integer)
     Proprietario = db.Column(db.String(80))
+    professore=db.Column(db.String(80))
 
-    def __init__(self, nome, materia, luogo, prezzo, idProprietario, Proprietario):
+    def __init__(self, nome, materia, luogo, prezzo, idProprietario, Proprietario, professore):
         self.nome=nome
         self.materia=materia
         self.luogo=luogo
         self.prezzo=prezzo
         self.idProprietario=idProprietario
         self.Proprietario=Proprietario
+        self.professore=professore
     def __repr__(self):
         return "<User {}>".format(self.nome, self.materia, self.luogo, self.prezzo, self.idProprietario)
 
