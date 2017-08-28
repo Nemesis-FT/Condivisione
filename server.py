@@ -2,6 +2,7 @@ from flask import Flask, session, url_for, redirect, request, render_template, a
 from flask_sqlalchemy import SQLAlchemy
 import smtplib
 import bcrypt
+from datetime import datetime, date, time
 app = Flask(__name__)
 app.secret_key = "condivisione"
 
@@ -58,17 +59,15 @@ class Impegno(db.Model):
     propId=db.Column(db.Integer)
     nomeRich=db.Column(db.String(80))
     nomeProp=db.Column(db.String(80))
-    ora=db.Column(db.String(80))
-    data=db.Column(db.String(80))
+    data=db.Column(db.DateTime)
     status=db.Column(db.Integer)
     materia=db.Column(db.String(80))
 
-    def __init__ (self, richId, propId, nomeRich, nomeProp, ora, data, materia):
+    def __init__ (self, richId, propId, nomeRich, nomeProp, data, materia):
         self.richId=richId
         self.propId=propId
         self.nomeRich=nomeRich
         self.nomeProp=nomeProp
-        self.ora=ora
         self.data=data
         self.status=0
         self.materia=materia
@@ -111,9 +110,9 @@ def sendemail(emailUtente, kind, ora, data, nome, materia):
     if str(kind) == "1": #Hai una nuova richiesta sul sito
         msg = "L\'utente "+ nome + " ha chiesto un appuntamento il "+ data +" alle ore "+ ora +" per "+ materia + ". Per accettare o declinare, accedi al sito Condivisione."
     elif str(kind) == "2":
-        msg = "La tua richiesta di ripetizione fatta allo studente "+ nome + " per il giorno "+ data + " alle ore "+ ora + " non e\' stata accettata."
+        msg = "La tua richiesta di ripetizione fatta allo studente "+ nome + " non e\' stata accettata."
     elif str(kind) == "3":
-        msg = "La tua richiesta di ripetizione fatta allo studente "+ nome + " per il giorno "+ data + " alle ore "+ ora + " e\' stata accettata."
+        msg = "La tua richiesta di ripetizione fatta allo studente "+ nome + " e\' stata accettata."
     else:
         msg = "Qualcosa non ha funzionato. Collegati al sito per vedere cosa c\'e\' di nuovo"
     server.sendmail(sender, emailUtente, msg)
@@ -279,9 +278,15 @@ def page_corso_isc(cid):
         nomeRichiedente=richiedente.nome+" "+richiedente.cognome
         proprietario=User.query.get(corso.idProprietario)
         nomeProprietario=proprietario.nome+" "+proprietario.cognome
-        nuovoImpegno=Impegno(richiedente.uid, corso.idProprietario, nomeRichiedente, nomeProprietario, request.form['ora'], request.form['data'], corso.materia)
+        data=request.form['data']
+        dsep=data.split("/")
+        d=date(int(dsep[2]), int(dsep[1]), int(dsep[0]))
+        ora=request.form['ora']
+        osep=ora.split(":")
+        o=time(int(osep[0]), int(osep[1]))
+        nuovoImpegno=Impegno(richiedente.uid, corso.idProprietario, nomeRichiedente, nomeProprietario, datetime.combine(d, o), corso.materia)
         proprietario.notifiche+=1
-        sendemail(proprietario.username, "1", request.form['ora'], request.form['data'], nomeRichiedente, corso.materia)
+        sendemail(proprietario.username, "1", ora, data, nomeRichiedente, corso.materia)
         db.session.add(nuovoImpegno)
         db.session.commit()
         return redirect(url_for('page_corso_list'))
@@ -309,7 +314,7 @@ def page_impegno_deny(iid):
         abort(403)
     impegno = Impegno.query.get(iid)
     tizio=User.query.get(impegno.richId)
-    sendemail(tizio.username, "2", impegno.ora, impegno.data, impegno.nomeProp, " ")
+    sendemail(tizio.username, "2", impegno.data.time, impegno.data.date, impegno.nomeProp, " ")
     db.session.delete(impegno)
     db.session.commit()
     return redirect(url_for('page_richieste'))
@@ -320,7 +325,7 @@ def page_impegno_accept(iid):
         abort(403)
     impegno = Impegno.query.get(iid)
     tizio=User.query.get(impegno.richId)
-    sendemail(tizio.username, "3", impegno.ora, impegno.data, impegno.nomeProp, " ")
+    sendemail(tizio.username, "3", impegno.data.time, impegno.data.date, impegno.nomeProp, " ")
     impegno.status=1
     db.session.commit()
     return redirect(url_for('page_richieste'))

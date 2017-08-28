@@ -1,19 +1,12 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-static-top">
   <div class="container-fluid">
-    <div class="navbar-header">
         <a class="navbar-brand" href="/dashboard">Condivisione</a>
-    </div>
     {% if user %}
-      <ul class="nav navbar-nav navbar-right">
         <p class="navbar-text">
           Accesso eseguito come {{user}}
         </p>
-        <a href="/" class="btn btn-danger navbar-btn btn-right">Logout</a>
-      </ul>
+        <a href="/" class="btn btn-danger navbar-btn">Logout</a>
     {% else %}
-      <ul class="nav navbar-nav">
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
           <p class="navbar-text">
             Accesso non eseguito
           </p>

@@ -57,8 +57,7 @@ class Impegno(db.Model):
     propId=db.Column(db.Integer)
     nomeRich=db.Column(db.String(80))
     nomeProp=db.Column(db.String(80))
-    ora=db.Column(db.String(80))
-    data=db.Column(db.String(80))
+    data=db.Column(db.DateTime)
     status=db.Column(db.Integer)
     materia=db.Column(db.String(80))
 
@@ -67,7 +66,6 @@ class Impegno(db.Model):
         self.propId=propId
         self.nomeRich=nomeRich
         self.nomeProp=nomeProp
-        self.ora=ora
         self.data=data
         self.status=0
         self.materia=materia
